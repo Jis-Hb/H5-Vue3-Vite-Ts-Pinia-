@@ -1,0 +1,124 @@
+// scss样式
+$themes: (
+  light: (
+    primary: #cd1014,
+    primary_transparent: #cd101313,
+    primary-color: #cd1014,
+    primary-Btn-color: #fff,
+    primary-Btn-text: #cd1014,
+    background_color: #f5f5f9,
+    //背景色
+    background_1color: #fff,
+    background_2color: #cccccc,
+    F-text-color: #fff,
+    D-text-color: #5a5d5a,
+    H-text-color: #bbb9b9,
+    text-color: #000,
+
+    // 主文本色
+    text-placeholder-color: #bfbfbf,
+    NavBar-Back-color: linear-gradient(to right, #fb3836, #ce1115),
+    NavBar-color: #fff,
+    //文字颜色
+    text-red: #cd1014,
+    text-green: #00a054,
+    text-grey: #757474,
+    filter_BackColor: #0b0b0bcc,
+  ),
+  dark: (
+    filter_BackColor: #0b0b0bcc,
+    primary: #4a4242,
+    primary_transparent: #0063c50e,
+    primary-color: #0062c5,
+    primary-Btn-color: #0062c5,
+    primary-Btn-text: #fff,
+    background_color: #1e1e1e,
+    //背景
+    background_2color: #757474,
+    background_1color: #272727,
+    text-color: #ffffff,
+    F-text-color: #fff,
+    D-text-color: #5a5d5a,
+    H-text-color: #d6d6d6,
+    NavBar-Back-color: #4a4242,
+    text-placeholder-color: #bfbfbf,
+    //文字颜色
+    text-red: #cd1014,
+    text-green: #00a054,
+    text-grey: #757474,
+  ),
+);
+
+// 处理样式，遍历主题map
+@mixin themeify {
+  @each $theme-name, $theme-map in $themes {
+    //!global 把局部变量提升为全局变量
+    $theme-map: $theme-map !global;
+
+    //判断html的data-theme的属性值  #{}是sass的插值表达式
+    //& sass嵌套里的父容器标识   @content是混合器插槽，像vue的slot
+    [data-theme="#{$theme-name}"] & {
+      @content;
+    }
+  }
+}
+
+//声明一个根据Key获取颜色的function
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}
+
+// 获取颜色
+@mixin background_color($color) {
+  @include themeify {
+    background: themed($color) !important;
+    background-color: themed($color) !important;
+    transition: all 0.5s;
+  }
+}
+
+@mixin Border($position: null, $line: solid, $size: null, $color: null) {
+  transition: all 0.5s;
+
+  @if ($position==null) {
+    @include themeify {
+      border: $size $line themed($color) !important;
+    }
+  }
+
+  @if ($position==top) {
+    @include themeify {
+      border-top: $size $line themed($color) !important;
+    }
+  }
+
+  @if ($position==left) {
+    @include themeify {
+      border-left: $size $line themed($color) !important;
+    }
+  }
+
+  @if ($position==bottom) {
+    @include themeify {
+      border-bottom: $size $line themed($color) !important;
+    }
+  }
+
+  @if ($position==right) {
+    @include themeify {
+      border-right: $size $line themed($color) !important;
+    }
+  }
+}
+@mixin Shadow($e: 0, $e1: 0, $e2: 0, $color) {
+  @include themeify {
+    box-shadow: $e $e1 $e2 themed($color);
+  }
+}
+
+//获取字体颜色
+@mixin font_color($color) {
+  @include themeify {
+    color: themed($color) !important;
+  }
+}
